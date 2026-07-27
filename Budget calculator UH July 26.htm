@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<!-- saved from url=(0242)file:///Users/melstibbs/Library/Application%20Support/Claude/local-agent-mode-sessions/9b5ddee8-de4b-448f-93ca-061ec7d65630/e8b77072-f9b1-4c07-b10e-f531cc6d178e/local_7eeb4526-44e4-4e75-a95f-25dde19cd681/outputs/monthly_budget_calculator.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Budget Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./Budget calculator UH July 26_files/css2" rel="stylesheet">
+<style>
+  :root {
+    --teal: #006182;
+    --marigold: #EBAB21;
+    --berry: #C6577C;
+    --duckegg: #7EA7AD;
+    --duckegg-light: #ADCCD1;
+    --bg: #F7FAFB;
+    --white: #FFFFFF;
+    --text: #1E2B2F;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px 16px 60px;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  header {
+    background: var(--teal);
+    color: var(--white);
+    padding: 28px 28px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+  }
+
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    font-weight: 600;
+  }
+
+  header p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--duckegg-light);
+  }
+
+  .section {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px 20px 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .section h2 {
+    color: var(--teal);
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--marigold);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--teal);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--duckegg-light);
+  }
+
+  tbody td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #EDF2F3;
+  }
+
+  input[type="text"], input[type="number"], select {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    border: 1px solid var(--duckegg-light);
+    border-radius: 6px;
+    padding: 7px 8px;
+    width: 100%;
+    background: var(--white);
+    color: var(--text);
+  }
+
+  input[type="text"]:focus, input[type="number"]:focus, select:focus {
+    outline: none;
+    border-color: var(--berry);
+  }
+
+  input[type="number"] {
+    text-align: right;
+  }
+
+  td.desc { width: 34%; }
+  td.amount { width: 20%; }
+  td.freq { width: 22%; }
+  td.monthly { width: 24%; text-align: right; font-weight: 600; color: var(--teal); white-space: nowrap; }
+
+  .extra-row input[type="text"] { color: #8a99a0; }
+  .extra-row input[type="text"]:focus { color: var(--text); }
+
+  .section-total {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 8px 14px;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--teal);
+  }
+
+  .summary {
+    background: var(--teal);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 22px 24px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 15px;
+  }
+
+  .summary-row.divider {
+    border-top: 1px solid rgba(255,255,255,0.25);
+    margin-top: 8px;
+    padding-top: 16px;
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .net-positive { color: #C9F2D9; }
+  .net-negative { color: #FBC9DA; }
+
+  .note {
+    font-size: 12px;
+    color: #6b7c81;
+    margin: -6px 0 24px;
+    padding: 0 4px;
+  }
+
+  @media (max-width: 560px) {
+    thead { display: none; }
+    tbody tr { display: block; padding: 10px 0; border-bottom: 1px solid #EDF2F3; }
+    tbody td { display: block; border-bottom: none; padding: 4px 0; }
+    td.monthly { text-align: left; }
+    td.desc::before { content: "Details: "; font-size: 11px; color: var(--berry); display: block; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Monthly Budget</h1>
+    <p>Amounts convert to a monthly figure automatically. Weekly ×4.33, fortnightly ×2.17. Edit any field to update.</p>
+  </header>
+
+  <div class="section">
+    <h2>Revenue</h2>
+    <table id="revenue-table">
+      <thead>
+        <tr>
+          <th class="desc">Details</th>
+          <th class="amount">Amount</th>
+          <th class="freq">Frequency</th>
+          <th class="monthly">Monthly</th>
+        </tr>
+      </thead>
+      <tbody><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Wages"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="3076.31"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly" selected="">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$13,330.68</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Child support"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="150"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly" selected="">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$650.00</span></td>
+      </tr><tr class="extra-row">
+        <td class="desc"><input type="text" class="desc-input" placeholder="Add item..." value=""></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value=""></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$0.00</span></td>
+      </tr></tbody>
+    </table>
+    <div class="section-total">Total revenue: <span id="revenue-total" style="margin-left:8px;">$13,980.68</span></div>
+  </div>
+
+  <div class="section">
+    <h2>Expenses</h2>
+    <table id="expense-table">
+      <thead>
+        <tr>
+          <th class="desc">Details</th>
+          <th class="amount">Amount</th>
+          <th class="freq">Frequency</th>
+          <th class="monthly">Monthly</th>
+        </tr>
+      </thead>
+      <tbody><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Mortgage home loan"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="1239.51"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly" selected="">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$5,371.21</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="School fees"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="6427"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$6,427.00</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Bupa"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="254.13"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly" selected="">Fortnightly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$550.62</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Insurance - house and contents"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="550.55"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$550.55</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Horses"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="300"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly" selected="">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$1,300.00</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Utilities - electricity - AGL"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="304.36"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$304.36</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Food"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="400"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly" selected="">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$1,733.33</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Random outings (3) - 2 meals &amp; one bounce outing"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="150"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly" selected="">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$650.00</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Emily food - takeaway/snacks"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="150"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly" selected="">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$650.00</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="School lunches"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="33"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly" selected="">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$143.00</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Timezone"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="200"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$200.00</span></td>
+      </tr><tr>
+        <td class="desc"><input type="text" class="desc-input" placeholder="" value="Meds - Grace"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="100"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$100.00</span></td>
+      </tr><tr class="extra-row">
+        <td class="desc"><input type="text" class="desc-input" placeholder="Add item..." value=""></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value=""></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$0.00</span></td>
+      </tr><tr class="extra-row">
+        <td class="desc"><input type="text" class="desc-input" placeholder="Add item..." value=""></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value=""></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$0.00</span></td>
+      </tr><tr class="extra-row">
+        <td class="desc"><input type="text" class="desc-input" placeholder="Add item..." value=""></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value=""></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$0.00</span></td>
+      </tr><tr class="extra-row">
+        <td class="desc"><input type="text" class="desc-input" placeholder="Add item..." value=""></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value=""></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$0.00</span></td>
+      </tr><tr class="extra-row">
+        <td class="desc"><input type="text" class="desc-input" placeholder="Add item..." value=""></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value=""></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly">Weekly</option>
+            <option value="fortnightly">Fortnightly</option>
+            <option value="monthly" selected="">Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$0.00</span></td>
+      </tr></tbody>
+    </table>
+    <div class="section-total">Total expenses: <span id="expense-total" style="margin-left:8px;">$17,980.07</span></div>
+  </div>
+
+  <div class="summary">
+    <div class="summary-row"><span>Total monthly revenue</span><span id="sum-revenue">$13,980.68</span></div>
+    <div class="summary-row"><span>Total monthly expenses</span><span id="sum-expenses">$17,980.07</span></div>
+    <div class="summary-row divider"><span>Net per month</span><span id="sum-net" class="net-negative">-$3,999.39</span></div>
+  </div>
+
+  <p class="note">Frequency conversion: weekly amounts × 52/12, fortnightly amounts × 26/12, monthly amounts unchanged.</p>
+
+</div>
+
+<script>
+  const WEEKLY = 52 / 12;
+  const FORTNIGHTLY = 26 / 12;
+
+  const revenueData = [
+    { desc: "Wages", amount: 3076.31, freq: "weekly" },
+    { desc: "Child support", amount: 150, freq: "weekly" },
+    { desc: "", amount: "", freq: "monthly", extra: true }
+  ];
+
+  const expenseData = [
+    { desc: "Mortgage home loan", amount: 1239.51, freq: "weekly" },
+    { desc: "School fees", amount: 6427, freq: "monthly" },
+    { desc: "Bupa", amount: 254.13, freq: "fortnightly" },
+    { desc: "Insurance - house and contents", amount: 550.55, freq: "monthly" },
+    { desc: "Horses", amount: 300, freq: "weekly" },
+    { desc: "Utilities - electricity - AGL", amount: 304.36, freq: "monthly" },
+    { desc: "Food", amount: 400, freq: "weekly" },
+    { desc: "Random outings (3) - 2 meals & one bounce outing", amount: 150, freq: "weekly" },
+    { desc: "Emily food - takeaway/snacks", amount: 150, freq: "weekly" },
+    { desc: "School lunches", amount: 33, freq: "weekly" },
+    { desc: "Timezone", amount: 200, freq: "monthly" },
+    { desc: "Meds - Grace", amount: 100, freq: "monthly" },
+    { desc: "", amount: "", freq: "monthly", extra: true },
+    { desc: "", amount: "", freq: "monthly", extra: true },
+    { desc: "", amount: "", freq: "monthly", extra: true },
+    { desc: "", amount: "", freq: "monthly", extra: true },
+    { desc: "", amount: "", freq: "monthly", extra: true }
+  ];
+
+  function monthlyValue(amount, freq) {
+    const n = parseFloat(amount);
+    if (isNaN(n)) return 0;
+    if (freq === "weekly") return n * WEEKLY;
+    if (freq === "fortnightly") return n * FORTNIGHTLY;
+    return n;
+  }
+
+  function fmt(n) {
+    return "$" + n.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function buildTable(tbodyId, data) {
+    const tbody = document.querySelector(tbodyId + " tbody");
+    data.forEach((row, i) => {
+      const tr = document.createElement("tr");
+      if (row.extra) tr.classList.add("extra-row");
+      tr.innerHTML = `
+        <td class="desc"><input type="text" class="desc-input" placeholder="${row.extra ? 'Add item...' : ''}" value="${row.desc}"></td>
+        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="${row.amount}"></td>
+        <td class="freq">
+          <select class="freq-input">
+            <option value="weekly" ${row.freq === "weekly" ? "selected" : ""}>Weekly</option>
+            <option value="fortnightly" ${row.freq === "fortnightly" ? "selected" : ""}>Fortnightly</option>
+            <option value="monthly" ${row.freq === "monthly" ? "selected" : ""}>Monthly</option>
+          </select>
+        </td>
+        <td class="monthly"><span class="monthly-value">$0.00</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  buildTable("#revenue-table", revenueData);
+  buildTable("#expense-table", expenseData);
+
+  function recalc() {
+    let revenueTotal = 0;
+    let expenseTotal = 0;
+
+    document.querySelectorAll("#revenue-table tbody tr").forEach(tr => {
+      const amount = tr.querySelector(".amount-input").value;
+      const freq = tr.querySelector(".freq-input").value;
+      const m = monthlyValue(amount, freq);
+      tr.querySelector(".monthly-value").textContent = fmt(m);
+      revenueTotal += m;
+    });
+
+    document.querySelectorAll("#expense-table tbody tr").forEach(tr => {
+      const amount = tr.querySelector(".amount-input").value;
+      const freq = tr.querySelector(".freq-input").value;
+      const m = monthlyValue(amount, freq);
+      tr.querySelector(".monthly-value").textContent = fmt(m);
+      expenseTotal += m;
+    });
+
+    document.getElementById("revenue-total").textContent = fmt(revenueTotal);
+    document.getElementById("expense-total").textContent = fmt(expenseTotal);
+    document.getElementById("sum-revenue").textContent = fmt(revenueTotal);
+    document.getElementById("sum-expenses").textContent = fmt(expenseTotal);
+
+    const net = revenueTotal - expenseTotal;
+    const netEl = document.getElementById("sum-net");
+    netEl.textContent = (net < 0 ? "-" : "") + fmt(Math.abs(net));
+    netEl.classList.remove("net-positive", "net-negative");
+    netEl.classList.add(net >= 0 ? "net-positive" : "net-negative");
+  }
+
+  document.addEventListener("input", recalc);
+  document.addEventListener("change", recalc);
+  recalc();
+</script>
+
+
+
+</body></html>
