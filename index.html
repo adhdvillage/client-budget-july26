@@ -5,14 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Monthly Budget Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
-<link href="./Budget calculator UH July 26_files/css2" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --teal: #006182;
-    --marigold: #EBAB21;
-    --berry: #C6577C;
     --duckegg: #7EA7AD;
     --duckegg-light: #ADCCD1;
+    --marigold: #EBAB21;
+    --blush: #D9A3AB;
+    --berry: #C6577C;
     --bg: #F7FAFB;
     --white: #FFFFFF;
     --text: #1E2B2F;
@@ -36,9 +38,12 @@
   header {
     background: var(--teal);
     color: var(--white);
-    padding: 28px 28px;
+    padding: 24px 28px;
     border-radius: 12px;
     margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
   }
 
   header h1 {
@@ -83,6 +88,10 @@
     color: var(--teal);
     padding: 6px 8px;
     border-bottom: 1px solid var(--duckegg-light);
+  }
+
+  thead th.amount, thead th.monthly {
+    text-align: right;
   }
 
   tbody td {
@@ -150,13 +159,13 @@
   }
 
   .net-positive { color: #C9F2D9; }
-  .net-negative { color: #FBC9DA; }
+  .net-negative { color: #E5B3C4; }
 
   .note {
     font-size: 12px;
     color: #6b7c81;
-    margin: -6px 0 24px;
-    padding: 0 4px;
+    margin: 16px 0 24px;
+    padding: 0 20px;
   }
 
   @media (max-width: 560px) {
@@ -172,8 +181,10 @@
 <div class="wrap">
 
   <header>
-    <h1>Monthly Budget</h1>
-    <p>Amounts convert to a monthly figure automatically. Weekly ×4.33, fortnightly ×2.17. Edit any field to update.</p>
+    <div>
+      <h1>Monthly Budget</h1>
+      <p>Amounts convert to a monthly figure automatically. Weekly ×4.33, fortnightly ×2.17. Edit any field to update.</p>
+    </div>
   </header>
 
   <div class="section">
@@ -442,32 +453,6 @@
   const WEEKLY = 52 / 12;
   const FORTNIGHTLY = 26 / 12;
 
-  const revenueData = [
-    { desc: "Wages", amount: 3076.31, freq: "weekly" },
-    { desc: "Child support", amount: 150, freq: "weekly" },
-    { desc: "", amount: "", freq: "monthly", extra: true }
-  ];
-
-  const expenseData = [
-    { desc: "Mortgage home loan", amount: 1239.51, freq: "weekly" },
-    { desc: "School fees", amount: 6427, freq: "monthly" },
-    { desc: "Bupa", amount: 254.13, freq: "fortnightly" },
-    { desc: "Insurance - house and contents", amount: 550.55, freq: "monthly" },
-    { desc: "Horses", amount: 300, freq: "weekly" },
-    { desc: "Utilities - electricity - AGL", amount: 304.36, freq: "monthly" },
-    { desc: "Food", amount: 400, freq: "weekly" },
-    { desc: "Random outings (3) - 2 meals & one bounce outing", amount: 150, freq: "weekly" },
-    { desc: "Emily food - takeaway/snacks", amount: 150, freq: "weekly" },
-    { desc: "School lunches", amount: 33, freq: "weekly" },
-    { desc: "Timezone", amount: 200, freq: "monthly" },
-    { desc: "Meds - Grace", amount: 100, freq: "monthly" },
-    { desc: "", amount: "", freq: "monthly", extra: true },
-    { desc: "", amount: "", freq: "monthly", extra: true },
-    { desc: "", amount: "", freq: "monthly", extra: true },
-    { desc: "", amount: "", freq: "monthly", extra: true },
-    { desc: "", amount: "", freq: "monthly", extra: true }
-  ];
-
   function monthlyValue(amount, freq) {
     const n = parseFloat(amount);
     if (isNaN(n)) return 0;
@@ -479,30 +464,6 @@
   function fmt(n) {
     return "$" + n.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
-
-  function buildTable(tbodyId, data) {
-    const tbody = document.querySelector(tbodyId + " tbody");
-    data.forEach((row, i) => {
-      const tr = document.createElement("tr");
-      if (row.extra) tr.classList.add("extra-row");
-      tr.innerHTML = `
-        <td class="desc"><input type="text" class="desc-input" placeholder="${row.extra ? 'Add item...' : ''}" value="${row.desc}"></td>
-        <td class="amount"><input type="number" step="0.01" class="amount-input" placeholder="0.00" value="${row.amount}"></td>
-        <td class="freq">
-          <select class="freq-input">
-            <option value="weekly" ${row.freq === "weekly" ? "selected" : ""}>Weekly</option>
-            <option value="fortnightly" ${row.freq === "fortnightly" ? "selected" : ""}>Fortnightly</option>
-            <option value="monthly" ${row.freq === "monthly" ? "selected" : ""}>Monthly</option>
-          </select>
-        </td>
-        <td class="monthly"><span class="monthly-value">$0.00</span></td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  buildTable("#revenue-table", revenueData);
-  buildTable("#expense-table", expenseData);
 
   function recalc() {
     let revenueTotal = 0;
